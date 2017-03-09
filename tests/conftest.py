@@ -9,7 +9,7 @@ from dateutil.tz import tzlocal
 from hypothesis import HealthCheck, settings, Verbosity
 
 from todoman import model
-from todoman.ui import DefaultFormatter
+from todoman.formatters import DefaultFormatter, HumanizedFormatter
 
 
 @pytest.fixture
@@ -73,14 +73,20 @@ def now_for_tz():
 @pytest.fixture
 def todo_factory(default_database):
     def inner(
+            description=None,
             due=None,
+            id=None,
+            location=None,
             priority=None,
             summary='YARR!',
               ):
         todo = model.FileTodo()
         todo.list = list(default_database.lists())[0]
 
+        todo.description = description
         todo.due = due
+        todo.id = id
+        todo.location = location
         todo.priority = priority
         todo.summary = summary
 
@@ -93,7 +99,14 @@ def todo_factory(default_database):
 
 @pytest.fixture
 def default_formatter():
-    return DefaultFormatter("%Y-%m-%d", "%H:%M", ' ')
+    formatter = DefaultFormatter(tz_override=pytz.timezone('CET'))
+    return formatter
+
+
+@pytest.fixture
+def humanized_formatter():
+    formatter = HumanizedFormatter(tz_override=pytz.timezone('CET'))
+    return formatter
 
 
 settings.register_profile("ci", settings(
