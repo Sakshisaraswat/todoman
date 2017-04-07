@@ -12,6 +12,7 @@ from todoman.cli import cli
     (-10800, '3 hours ago'),
 ])
 @pytest.mark.parametrize('tz', ['CET', 'HST'])
+@freeze_time('2017-03-25')
 def test_humanized_date(runner, create, interval, now_for_tz, tz):
     seconds, expected = interval
     due = now_for_tz(tz) + timedelta(seconds=seconds)
@@ -22,14 +23,14 @@ def test_humanized_date(runner, create, interval, now_for_tz, tz):
         .format(tz, due.strftime('%Y%m%dT%H%M%S'))
     )
 
-    result = runner.invoke(cli, ['--humanize', 'list', '--all'])
+    result = runner.invoke(cli, ['--humanize', 'list', '--status', 'ANY'])
     assert not result.exception
     assert expected in result.output
 
 
 def test_format_priority(default_formatter):
-    assert default_formatter.format_priority(None) == ''
-    assert default_formatter.format_priority(0) == ''
+    assert default_formatter.format_priority(None) == 'none'
+    assert default_formatter.format_priority(0) == 'none'
     assert default_formatter.format_priority(5) == 'medium'
     for i in range(1, 5):
         assert default_formatter.format_priority(i) == 'high'
@@ -64,6 +65,7 @@ def test_detailed_format(runner, todo_factory):
         location='Over the hills, and far away',
     )
 
+    # TODO:use formatter instead of runner?
     result = runner.invoke(cli, ['show', '1'])
     expected = (
         '1  [ ]      YARR! @default\n\n'

@@ -4,27 +4,47 @@ Changelog
 This file contains a brief summary of new features and dependency changes or
 releases, in reverse chronological order.
 
+v3.1.0
+------
+
+* Add a new setting ``default_command``.
+* Replace ``--all`` and ``--done-only`` with  ``--status``, which allows
+  fine-grained status filtering. Use ``--status ANY`` or ``--status COMPLETED``
+  to obtain the same results as the previous flags.
+* Rename ``--today`` flag to ``--startable``.
+* Illegal start dates (eg: start dates that are not before the due date) are
+  ignored and are removed when saving an edited todo.
+
 v3.0.0
 ------
 
+New features
+~~~~~~~~~~~~
+
+* Add a ``today`` setting and flag to exclude todos that start in the future.
 * Add the ``--humanize`` to show friendlier date times (eg: ``in 3 hours``).
-* Dropped ``--urgent`` and introduced ``--priority``
-* Added support for filtering by priority
-* New PyPI dependency ``tabulate``.
-* Basic support for times in due dates, new ``time_format`` configuration
-  parameter.
+* Drop ``--urgent`` and introduced ``--priority``, which allows fine-filtering
+  by priority.
+* Add support for times in due dates, new ``time_format`` setting.
 * Use the system's date format as a default.
-* Add list selector to TodoEditor
-* Add ``--start="[before|after] <date>`` option for ``todo list``. It shows todos
-  created before/after given date.
+* Add list selector to the interactive editor.
+* Add ``--start=[before|after] [DATE]`` option for ``list`` to only show
+  todos starting before/after given date.
 * Add flag "--done-only" to todo list. Displays only completed tasks.
-* Make the output of move, delete, copy and flush more consistent with
-  everything else.
+* Make the output of move, delete, copy and flush consistent.
 * Porcelain now outputs proper JSON, rather than one-JSON-per-line.
 * Increment sequence number upon edits.
 * Print a descriptive message when no lists are found.
 * Add full support for locations.
-* Todoman now experimentally support pypy3.
+
+Packaging changes
+~~~~~~~~~~~~~~~~~
+
+* New runtime dependency: ``tabulate``.
+* New supported python version: ``pypy3``.
+* Include an alternative [much faster] entry point (aka "bin") which we
+  recommend all downstream packagers use. Please see the :ref:`Notes for
+  Packagers <notes-for-packagers>` documentation for further details.
 
 
 v2.1.0
